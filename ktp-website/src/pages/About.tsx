@@ -1,8 +1,8 @@
 
 function About() {
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-4">About Us</h1>
+    <div className="max-w-4xl mx-auto py-8 px-4 center flex-col items-center">
+      <h1 className="text-7xl font-thin mb-4 text-center pb-16">Our Story</h1>
       <p className="text-gray-700 leading-relaxed">
         Welcome to our About page! Here, you'll learn more about our mission,
         values, and the history of KTP. We strive to create an environment
