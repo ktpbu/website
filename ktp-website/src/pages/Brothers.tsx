@@ -214,7 +214,9 @@ function Brothers() {
               <p>Loading brothers...</p>
             ) : (
               Object.entries(groupByClass(brotherName))
-                .sort(([classA], [classB]) => {
+                .sort(([classA], [classB]) => { //do this so unkowns are at the end
+                  if (classA === "Unknown") return 1;
+                  if (classB === "Unknown") return -1;
                   // Sort using the custom order defined in `letters`
                   const indexA = letters.indexOf(classA);
                   const indexB = letters.indexOf(classB);
