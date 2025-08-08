@@ -20,6 +20,9 @@ import download from "../img/App/download.jpeg";
 import downloadonappstore from "../img/App/Download on App Store.png";
 const images = [events, people, alerts, profile, download]
 
+/*President Welcome IMAGES*/
+import PresidentialWelcome from '../components/PresidentialWelcome';
+
 /* Network IMAGES */
 import network from "../img/Network/Network.png";
 
@@ -106,6 +109,9 @@ function Home() {
         <img src={network} alt="network" className="mb-10" />
       </section>
 
+      {/* PRESIDENT WELCOME SECTION */}
+      <PresidentialWelcome />
+      
       {/* KTP APP SECTION */}
       <section className="py-12 px-4">
   <div className="max-w-6xl mx-auto">
