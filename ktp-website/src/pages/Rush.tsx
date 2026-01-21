@@ -46,6 +46,8 @@ const FAQItem: React.FC<FAQItemProps> = ({
 
 function Rush() {
     const RUSH_OPEN = false; 
+    const rush_link = "https://forms.gle/YourRushApplicationFormLink"; 
+
     const lenisRef = useRef<{
         lenis?: {
             on: (event: string, handler: (e: any) => void) => void;
@@ -55,14 +57,11 @@ function Rush() {
     const [, setScrollY] = useState(0);
     const dataContext = React.useContext(DataBaseDataContext);
     const userData = dataContext?.userData;
-    const pictureData = dataContext?.pictureData;
     const vpOfRecruitment = userData?.find(
         (user: { Eboard_Position: string }) =>
             user.Eboard_Position === "VP of Recruitment"
     );
-    const vpOfRecruitmentPic = pictureData?.find(
-        (pic: { _id: string }) => pic._id === vpOfRecruitment?.websitePic
-    );
+
 
     const [openQuestion, setOpenQuestion] = useState(null);
     const faqs = [
@@ -194,7 +193,7 @@ function Rush() {
                             disabled={!RUSH_OPEN}
                         >
                         <a
-                                href={RUSH_OPEN ? "https://forms.gle/r7XERieHVHAqo3fw5" : undefined}
+                                href={RUSH_OPEN ? rush_link : undefined}
                                 target={RUSH_OPEN ? "_blank" : undefined}
                                 rel={RUSH_OPEN ? "noopener noreferrer" : undefined}
                                 className={RUSH_OPEN ? '' : 'pointer-events-none'}
@@ -233,10 +232,10 @@ function Rush() {
                 <div className="flex flex-col md:flex-row items-center justify-center my-20 px-10">
                     {/* Image Section */}
                     <div className="mb-6 md:mb-0">
-                        {vpOfRecruitmentPic?.data ? (
+                        {vpOfRecruitment?.WebsitePhotoURL ? (
                             // Once the image data is available, render the image
                             <img
-                                src={`data:image/jpeg;base64,${vpOfRecruitmentPic?.data}`}
+                                src={`${vpOfRecruitment?.WebsitePhotoURL}`}
                                 alt={`${vpOfRecruitment?.FirstName} ${vpOfRecruitment?.LastName}`}
                                 className="rounded-md shadow-lg object-cover w-60 h-120"
                             />

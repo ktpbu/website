@@ -17,23 +17,16 @@ interface User {
   pictureUrl?: string | null;  // Field we add to hold the final image URL or fallback
 }
 
-// Example interface for a single picture document
-interface Picture {
-  id: string;
-  data: string;  // Base64-encoded image string
-}
 
 // Example interface for the context's value
 interface DataBaseDataContextType {
   userData?: User[];
-  pictureData?: Picture[];
 }
 
 function Brothers() {
   //DB DATA
   const dataContext = useContext(DataBaseDataContext) as DataBaseDataContextType | null;
   const userData = dataContext?.userData;
-  const pictureData = dataContext?.pictureData;
 
   // Possible tabs
   type Tab = "Actives" | "E-Board" | "Alumni";
@@ -118,34 +111,20 @@ function Brothers() {
   };
 
   useEffect(() => {
-    if (userData && pictureData) {
+    if (userData) {
       // Separate alumni from other positions
-      const alumni = userData.filter((user) => user.Position === 4);
+      const alumni = userData.filter((user) => Number(user.Position) === 4);
       setAlumniName(alumni);
 
       let filteredUsers = userData.filter((user) =>
-        [2, 3, 5].includes(user.Position ?? 0)
+        [2, 3, 5].includes(Number(user.Position) ?? 0)
       );
 
       // Join users with pictures based on `id` and `websitePic`
       const brothersWithPictures = filteredUsers.map((user) => {
         let pictureUrl: string | null = null;
         // Find the matching picture
-        const userPicture = pictureData.find((pic) => pic.id === user.websitePic);
-        if (userPicture) {
-          // Base64-encoded image
-          pictureUrl = `data:image/jpeg;base64,${userPicture.data}`;
-        } else {
-          // Fallback to default image path
-          pictureUrl = fallbackImage;
-        }
 
-        // console.log("User Data with Picture:", {
-        //   user,
-        //   userPicture,
-        //   pictureUrl,
-        // });
-        // Return a new user object with the pictureUrl field added
         return {
           ...user,
           pictureUrl,
@@ -157,7 +136,7 @@ function Brothers() {
       setBrotherName(brothers);
       setEboardName(eboardMembers);
     }
-  }, [userData, pictureData]);
+  }, [userData]);
 
   return (
     <div className="w-full py-8 px-4">
@@ -241,7 +220,7 @@ function Brothers() {
                           >
                             <div className="duration-300 group-hover:-translate-y-2">
                               <img
-                                src={brother.pictureUrl ?? fallbackImage}
+                                src={brother.WebsitePhotoURL ?? fallbackImage}
                                 alt={`${brother.FirstName ?? "Unknown"} ${brother.LastName ?? "Brother"}`}
                                 className="w-56 h-56 object-cover object-top rounded-md transition-transform duration-300 group-hover:shadow-lg"
                               />
@@ -264,70 +243,150 @@ function Brothers() {
           </div>
         )}
         {activeTab === "E-Board" && (
-          // Show E-Board Members
-          <div className="mt-6">
+            // Show E-Board Members
+            <div className="mt-6">
             {/* Header */}
             <h2 className="text-xl items-center text-center font-semibold mb-12 underline decoration-2 underline-offset-4">
               Kappa Theta Pi Executive Board
             </h2>
             <ul className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-y-6 gap-x-5 mx-auto max-w-6xl text-gray-700">
               {eboardName.length > 0 ? (
-                eboardName.map((member, index) => (
-                  <li
-                    key={`${member.id}-${index}`}
-                    className="flex flex-col items-center justify-between text-center space-y-0.2"
+              [...eboardName] // Create a shallow copy to avoid mutating state
+                .sort((a, b) => {
+                const aIsCoPresident = a.Eboard_Position === "Co-President";
+                const bIsCoPresident = b.Eboard_Position === "Co-President";
+                if (aIsCoPresident && !bIsCoPresident) return -1; // a comes first
+                if (!aIsCoPresident && bIsCoPresident) return 1;  // b comes first
+                return 0; // maintain original order for others
+                })
+                .map((member, index) => (
+                <li
+                  key={`${member.id}-${index}`}
+                  className="flex flex-col items-center justify-between text-center space-y-0.2"
+                >
+                  {/* Profile Image and linkedIn */}
+                  <a
+                  href={errorHandlingLinkedIn(member.LinkedIn)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative w-56 h-56 group"
                   >
-                    {/* Profile Image and linkedIn */}
-                    <a
-                      href={errorHandlingLinkedIn(member.LinkedIn)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="relative w-56 h-56 group"
-                    >
-                      <div className="duration-300 group-hover:-translate-y-2">
-                        <img
-                          src={member.pictureUrl ?? fallbackImage}
-                          alt={`${member.FirstName ?? "Unknown"} ${member.LastName ?? "Member"}`}
-                          className="w-56 h-56 object-cover object-top rounded-md transition-transform duration-300 group-hover:shadow-lg"
-                        />
-                        {/* LinkedIn Icon - Appears on Hover */}
-                        <div className="w-56 h-56 absolute inset-0 flex justify-center items-center bg-white bg-opacity-50 text-blue opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <Icons.Linkedin />
-                        </div>
-                      </div>
-                    </a>
-                    <span className="text-lg font-bebasneue font-semibold">
-                      {member.FirstName} {member.LastName}
-                    </span>
-                    {/* Display E-Board Position */}
-                    <span className="text-sm text-gray-500">{member.Eboard_Position}</span>
-                  </li>
+                  <div className="duration-300 group-hover:-translate-y-2">
+                    <img
+                    src={member.WebsitePhotoURL ?? fallbackImage}
+                    alt={`${member.FirstName ?? "Unknown"} ${member.LastName ?? "Member"}`}
+                    className="w-56 h-56 object-cover object-top rounded-md transition-transform duration-300 group-hover:shadow-lg"
+                    />
+                    {/* LinkedIn Icon - Appears on Hover */}
+                    <div className="w-56 h-56 absolute inset-0 flex justify-center items-center bg-white bg-opacity-50 text-blue opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <Icons.Linkedin />
+                    </div>
+                  </div>
+                  </a>
+                  <span className="text-lg font-bebasneue font-semibold">
+                  {member.FirstName} {member.LastName}
+                  </span>
+                  {/* Display E-Board Position */}
+                  <span className="text-sm text-gray-500">{member.Eboard_Position}</span>
+                </li>
                 ))
               ) : (
-                <p className="text-center">Loading e-board members...</p>
+              <p className="text-center">Loading e-board members...</p>
               )}
             </ul>
-          </div>
+            </div>
         )}
         {activeTab === "Alumni" && (
-          <div className="mt-6">
-            <h2 className="text-xl items-center text-center font-semibold mb-12 underline decoration-2 underline-offset-4">
+          <div className="mt-10">
+            <h2 className="text-xl text-center font-semibold mb-12 underline decoration-2 underline-offset-4">
               Kappa Theta Pi Alumni
             </h2>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-y-4 mx-auto max-w-6xl text-gray-700">
-              {alumniName.length > 0 ? (
-                alumniName.map((alumnus, index) => (
-                  <li
-                    key={`${alumnus.id}-${index}`}
-                    className="text-lg text-center font-bebasneue font-semibold"
-                  >
-                    {alumnus.FirstName} {alumnus.LastName}
-                  </li>
-                ))
-              ) : (
-                <p>Loading alumni...</p>
-              )}
-            </ul>
+
+            {alumniName.length > 0 ? (
+              (() => {
+                // 1. Greek Letter Mapping (The "Dynamic Logo")
+                const greekMap = {
+                  "Co-founder": "★", // Star for founders
+                  "Alpha": "Α", "Beta": "Β", "Gamma": "Γ", "Delta": "Δ", "Epsilon": "Ε", 
+                  "Zeta": "Ζ", "Eta": "Η", "Theta": "Θ", "Iota": "Ι", "Kappa": "Κ", 
+                  "Lambda": "Λ", "Mu": "Μ", "Nu": "Ν", "Xi": "Ξ", "Omicron": "Ο", 
+                  "Pi": "Π", "Rho": "Ρ", "Sigma": "Σ", "Tau": "Τ", "Upsilon": "Υ", 
+                  "Phi": "Φ", "Chi": "Χ", "Psi": "Ψ", "Omega": "Ω"
+                };
+
+                const classOrder = [
+                  "Co-founder", "Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Zeta", 
+                  "Eta", "Theta", "Iota", "Kappa", "Lambda", "Mu", "Nu", "Xi", 
+                  "Omicron", "Pi", "Rho", "Sigma", "Tau", "Upsilon", "Phi", "Chi", 
+                  "Psi", "Omega"
+                ];
+
+                // 2. Group Alumni
+                const groupedAlumni = alumniName.reduce((acc, alumnus) => {
+                  const group = alumnus.Class || "Unknown";
+                  if (!acc[group]) acc[group] = [];
+                  acc[group].push(alumnus);
+                  return acc;
+                }, {});
+
+                // 3. Sort Classes
+                const sortedClassNames = Object.keys(groupedAlumni).sort((a, b) => {
+                  const indexA = classOrder.indexOf(a);
+                  const indexB = classOrder.indexOf(b);
+                  if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+                  if (indexA !== -1) return -1;
+                  if (indexB !== -1) return 1;
+                  return a.localeCompare(b);
+                });
+
+                return sortedClassNames.map((className) => (
+                  <div key={className} className="flex flex-col md:flex-row mb-16 border-b border-gray-100 pb-10 last:border-0">
+                    
+                    {/* LEFT SIDE: Class Name + Dynamic Greek Letter */}
+                    <div className="md:w-1/4 mb-4 md:mb-0 flex flex-col items-start pr-8">
+                      <h3 className="text-xl font-bold text-gray-900 uppercase tracking-wide">
+                        {className}
+                      </h3>
+                      {/* This renders the Greek Letter dynamically */}
+                      <span className="text-6xl font-serif text-gray-200 mt-2 select-none">
+                        {greekMap[className] || className.charAt(0)}
+                      </span>
+                    </div>
+
+                    {/* RIGHT SIDE: Text List of Names */}
+                    <div className="md:w-3/4">
+                      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-8">
+                        {groupedAlumni[className].map((alumnus, index) => {
+                          
+                          // Common styles for the name text
+                          const nameText = `${alumnus.FirstName} ${alumnus.LastName}`;
+                          const baseClasses = "text-gray-700 text-lg transition-colors duration-200";
+                      
+                          return (
+                            <li key={index}>
+                              {alumnus.LinkedIn ? (
+                                <a
+                                  href={alumnus.LinkedIn}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={`${baseClasses} hover:text-blue-800 no-underline`}
+                                >
+                                  {nameText}
+                                </a>
+                              ) : (
+                                <span className={baseClasses}>{nameText}</span>
+                              )}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </div>
+                ));
+              })()
+            ) : (
+              <p>Loading alumni...</p>
+            )}
           </div>
         )}
       </div> {/* Last Div for the brothers/eboard/alumni*/}

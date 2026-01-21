@@ -21,7 +21,6 @@ import downloadonappstore from "../img/App/Download on App Store.png";
 const images = [events, people, alerts, profile, download]
 
 /*President Welcome IMAGES*/
-import PresidentialWelcome from '../components/PresidentialWelcome';
 
 /* Network IMAGES */
 import network from "../img/Network/Network.png";
@@ -102,8 +101,6 @@ function Home() {
         </div>
       </div>
       
-      {/* PRESIDENT WELCOME SECTION */}
-      <PresidentialWelcome />
       
       {/* NETWORK SECTION */}
       <section className="py-12 px-4 text-center">
