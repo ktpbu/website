@@ -6,6 +6,7 @@ import { DataBaseDataContext } from "../contexts/DataBaseDataContext";
 
 // Example interface for a single user/brother object
 interface User {
+  WebsitePhotoURL: string;
   id: string;
   Position?: number;
   Eboard_Position?: string;    // E-Board position (if any)
@@ -305,7 +306,8 @@ function Brothers() {
             {alumniName.length > 0 ? (
               (() => {
                 // 1. Greek Letter Mapping (The "Dynamic Logo")
-                const greekMap = {
+                // FIX: Added Record<string, string> type definition
+                const greekMap: Record<string, string> = {
                   "Co-founder": "★", // Star for founders
                   "Alpha": "Α", "Beta": "Β", "Gamma": "Γ", "Delta": "Δ", "Epsilon": "Ε", 
                   "Zeta": "Ζ", "Eta": "Η", "Theta": "Θ", "Iota": "Ι", "Kappa": "Κ", 
@@ -322,7 +324,8 @@ function Brothers() {
                 ];
 
                 // 2. Group Alumni
-                const groupedAlumni = alumniName.reduce((acc, alumnus) => {
+                // FIX: Added <Record<string, User[]>> generic to reduce
+                const groupedAlumni = alumniName.reduce<Record<string, User[]>>((acc, alumnus) => {
                   const group = alumnus.Class || "Unknown";
                   if (!acc[group]) acc[group] = [];
                   acc[group].push(alumnus);
