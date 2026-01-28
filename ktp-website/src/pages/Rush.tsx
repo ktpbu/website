@@ -45,8 +45,8 @@ const FAQItem: React.FC<FAQItemProps> = ({
 );
 
 function Rush() {
-    const RUSH_OPEN = false; 
-    const rush_link = "https://forms.gle/YourRushApplicationFormLink"; 
+    const RUSH_OPEN = true; 
+    const rush_link = "http://docs.google.com/forms/d/e/1FAIpQLSe4ayYTwRyQ3LmH5aykjTkuddiXsR4Ez-8OqYm1ZodxQiuZFA/viewform"; 
 
     const lenisRef = useRef<{
         lenis?: {
@@ -155,7 +155,8 @@ function Rush() {
                     <div className="mt-10 text-5xl font-sfpro font-bold mb-4">
                         Welcome to{" "}
                         <span className="bg-ktp-appblue text-white px-2 py-1 rounded inline-block leading-relaxed">
-                            Fall 2025
+                            {new Date().getMonth() < 6 ? "Spring" : "Fall"}{" "}
+                            {new Date().getFullYear()}
                         </span>{" "}
                         Rush!
                     </div>
