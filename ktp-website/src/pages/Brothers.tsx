@@ -90,21 +90,18 @@ function Brothers() {
     "Theta", "Eta", "Zeta", "Epsilon", "Delta", "Gamma", "Beta", "Alpha", "Co-founder"
   ];
 
-  const errorHandlingLinkedIn = (linkedIn?: string): string => {
+  // UPDATED: Now returns null if no LinkedIn is present, prevents fallback behavior
+  const errorHandlingLinkedIn = (linkedIn?: string): string | null => {
     if (!linkedIn) {
-      // If LinkedIn is empty, return the default company page
-      return "https://www.linkedin.com/company/kappa-theta-pi-lambda-chapter/";
+      return null;
     }
     if (linkedIn.startsWith("https://")) {
-      // If it already starts with https://, return as is
       return linkedIn;
     }
     if (linkedIn.startsWith("http://")) {
-      // If it already starts with http://, return as is //edge case for griffin http
       return linkedIn;
     }
     if (linkedIn.startsWith("www.linkedin.com")) {
-      // If it starts with www.linkedin.com, prepend https://
       return `https://${linkedIn}`;
     }
     // Otherwise, assume it's just the username and construct the full URL
@@ -207,36 +204,53 @@ function Brothers() {
                       {className === "Co-founder" ? "Founding" : className} Class
                     </h2>
                     <ul className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-y-10 gap-x-5 mx-auto max-w-7xl text-gray-700">
-                      {brothers.map((brother, index) => (
-                        <li
-                          key={`${brother.id}-${index}`}
-                          className="flex flex-col items-center justify-between text-center space-y-2 "
-                        >
-                          {/* Profile Image and linkedIn */}
-                          <a
-                            href={errorHandlingLinkedIn(brother.LinkedIn)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="relative w-56 h-56 group"
+                      {brothers.map((brother, index) => {
+                         // Calculate link once
+                         const linkedInUrl = errorHandlingLinkedIn(brother.LinkedIn);
+                         
+                         return (
+                          <li
+                            key={`${brother.id}-${index}`}
+                            className="flex flex-col items-center justify-between text-center space-y-2 "
                           >
-                            <div className="duration-300 group-hover:-translate-y-2">
-                              <img
-                                src={brother.WebsitePhotoURL ?? fallbackImage}
-                                alt={`${brother.FirstName ?? "Unknown"} ${brother.LastName ?? "Brother"}`}
-                                className="w-56 h-56 object-cover object-top rounded-md transition-transform duration-300 group-hover:shadow-lg"
-                              />
-                              {/* LinkedIn Icon - Appears on Hover */}
-                              <div className="w-56 h-56 absolute inset-0 flex justify-center items-center bg-white bg-opacity-50 text-blue opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <Icons.Linkedin />
+                            {/* Profile Image Logic */}
+                            {linkedInUrl ? (
+                              // HAS LINKEDIN: Render Anchor + Hover Effects
+                              <a
+                                href={linkedInUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="relative w-56 h-56 group"
+                              >
+                                <div className="duration-300 group-hover:-translate-y-2">
+                                  <img
+                                    src={brother.WebsitePhotoURL ?? fallbackImage}
+                                    alt={`${brother.FirstName ?? "Unknown"} ${brother.LastName ?? "Brother"}`}
+                                    className="w-56 h-56 object-cover object-top rounded-md transition-transform duration-300 group-hover:shadow-lg"
+                                  />
+                                  {/* LinkedIn Icon - Appears on Hover */}
+                                  <div className="w-56 h-56 absolute inset-0 flex justify-center items-center bg-white bg-opacity-50 text-blue opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <Icons.Linkedin />
+                                  </div>
+                                </div>
+                              </a>
+                            ) : (
+                              // NO LINKEDIN: Static Image, No Hover, No Link
+                              <div className="relative w-56 h-56">
+                                <img
+                                  src={brother.WebsitePhotoURL ?? fallbackImage}
+                                  alt={`${brother.FirstName ?? "Unknown"} ${brother.LastName ?? "Brother"}`}
+                                  className="w-56 h-56 object-cover object-top rounded-md"
+                                />
                               </div>
-                            </div>
+                            )}
                             
-                          </a>
-                          <span className="text-lg font-bebasneue font-semibold">
-                            {brother.FirstName} {brother.LastName}
-                          </span>
-                        </li>
-                      ))}
+                            <span className="text-lg font-bebasneue font-semibold">
+                              {brother.FirstName} {brother.LastName}
+                            </span>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 ))
@@ -260,37 +274,55 @@ function Brothers() {
                 if (!aIsCoPresident && bIsCoPresident) return 1;  // b comes first
                 return 0; // maintain original order for others
                 })
-                .map((member, index) => (
-                <li
-                  key={`${member.id}-${index}`}
-                  className="flex flex-col items-center justify-between text-center space-y-0.2"
-                >
-                  {/* Profile Image and linkedIn */}
-                  <a
-                  href={errorHandlingLinkedIn(member.LinkedIn)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="relative w-56 h-56 group"
-                  >
-                  <div className="duration-300 group-hover:-translate-y-2">
-                    <img
-                    src={member.WebsitePhotoURL ?? fallbackImage}
-                    alt={`${member.FirstName ?? "Unknown"} ${member.LastName ?? "Member"}`}
-                    className="w-56 h-56 object-cover object-top rounded-md transition-transform duration-300 group-hover:shadow-lg"
-                    />
-                    {/* LinkedIn Icon - Appears on Hover */}
-                    <div className="w-56 h-56 absolute inset-0 flex justify-center items-center bg-white bg-opacity-50 text-blue opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <Icons.Linkedin />
-                    </div>
-                  </div>
-                  </a>
-                  <span className="text-lg font-bebasneue font-semibold">
-                  {member.FirstName} {member.LastName}
-                  </span>
-                  {/* Display E-Board Position */}
-                  <span className="text-sm text-gray-500">{member.Eboard_Position}</span>
-                </li>
-                ))
+                .map((member, index) => {
+                  // Calculate link once
+                  const linkedInUrl = errorHandlingLinkedIn(member.LinkedIn);
+
+                  return (
+                    <li
+                      key={`${member.id}-${index}`}
+                      className="flex flex-col items-center justify-between text-center space-y-0.2"
+                    >
+                      {/* Profile Image Logic */}
+                      {linkedInUrl ? (
+                        // HAS LINKEDIN: Render Anchor + Hover Effects
+                        <a
+                        href={linkedInUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="relative w-56 h-56 group"
+                        >
+                        <div className="duration-300 group-hover:-translate-y-2">
+                          <img
+                          src={member.WebsitePhotoURL ?? fallbackImage}
+                          alt={`${member.FirstName ?? "Unknown"} ${member.LastName ?? "Member"}`}
+                          className="w-56 h-56 object-cover object-top rounded-md transition-transform duration-300 group-hover:shadow-lg"
+                          />
+                          {/* LinkedIn Icon - Appears on Hover */}
+                          <div className="w-56 h-56 absolute inset-0 flex justify-center items-center bg-white bg-opacity-50 text-blue opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <Icons.Linkedin />
+                          </div>
+                        </div>
+                        </a>
+                      ) : (
+                        // NO LINKEDIN: Static Image
+                        <div className="relative w-56 h-56">
+                           <img
+                            src={member.WebsitePhotoURL ?? fallbackImage}
+                            alt={`${member.FirstName ?? "Unknown"} ${member.LastName ?? "Member"}`}
+                            className="w-56 h-56 object-cover object-top rounded-md"
+                          />
+                        </div>
+                      )}
+                      
+                      <span className="text-lg font-bebasneue font-semibold">
+                      {member.FirstName} {member.LastName}
+                      </span>
+                      {/* Display E-Board Position */}
+                      <span className="text-sm text-gray-500">{member.Eboard_Position}</span>
+                    </li>
+                  );
+                })
               ) : (
               <p className="text-center">Loading e-board members...</p>
               )}
@@ -306,7 +338,6 @@ function Brothers() {
             {alumniName.length > 0 ? (
               (() => {
                 // 1. Greek Letter Mapping (The "Dynamic Logo")
-                // FIX: Added Record<string, string> type definition
                 const greekMap: Record<string, string> = {
                   "Co-founder": "★", // Star for founders
                   "Alpha": "Α", "Beta": "Β", "Gamma": "Γ", "Delta": "Δ", "Epsilon": "Ε", 
@@ -324,7 +355,6 @@ function Brothers() {
                 ];
 
                 // 2. Group Alumni
-                // FIX: Added <Record<string, User[]>> generic to reduce
                 const groupedAlumni = alumniName.reduce<Record<string, User[]>>((acc, alumnus) => {
                   const group = alumnus.Class || "Unknown";
                   if (!acc[group]) acc[group] = [];
@@ -350,7 +380,6 @@ function Brothers() {
                       <h3 className="text-xl font-bold text-gray-900 uppercase tracking-wide">
                         {className}
                       </h3>
-                      {/* This renders the Greek Letter dynamically */}
                       <span className="text-6xl font-serif text-gray-200 mt-2 select-none">
                         {greekMap[className] || className.charAt(0)}
                       </span>
@@ -364,12 +393,14 @@ function Brothers() {
                           // Common styles for the name text
                           const nameText = `${alumnus.FirstName} ${alumnus.LastName}`;
                           const baseClasses = "text-gray-700 text-lg transition-colors duration-200";
+                          // Calculate link for Alumni (ensures it is a full URL not a relative path)
+                          const alumniUrl = errorHandlingLinkedIn(alumnus.LinkedIn);
                       
                           return (
                             <li key={index}>
-                              {alumnus.LinkedIn ? (
+                              {alumniUrl ? (
                                 <a
-                                  href={alumnus.LinkedIn}
+                                  href={alumniUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className={`${baseClasses} hover:text-blue-800 no-underline`}
