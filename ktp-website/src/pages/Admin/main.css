@@ -1,0 +1,40 @@
+body{
+    background-color: rgb(248.0,247.0,252.0);
+}
+
+ul li{
+    background-color: white;
+    cursor: pointer; 
+    text-align: left;
+}
+
+ul{ 
+    height: 85vh;
+    display: flex;
+    flex-direction: column;
+
+}
+
+ul li p:active{
+    opacity: 0.5;
+}
+ul li:nth-child(n+2){
+    background-color: transparent; 
+    border-top: 1px solid rgb(198, 198, 198);
+    padding-top: 20px
+}
+
+ul .logout{ 
+    color: red;
+    margin-top: auto;
+}
+
+
+.filters h1:not(:first-child){
+    border-top: solid black 1px; 
+}
+
+
+.brothersListContainer .brotherEntry{
+
+}
