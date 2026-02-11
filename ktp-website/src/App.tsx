@@ -16,7 +16,7 @@ import Footer from "./components/Footer";
 // import ChatbotProvider from "./contexts/ChatbotContext";
 import { useState, useEffect } from "react";
 import axios from "axios";
-const backendUrl = import.meta.env.VITE_LOCAL_BACKEND_URL; //change back to VITE_BACKEND_URL for production 
+const backendUrl = import.meta.env.VITE_BACKEND_URL; //change back to VITE_BACKEND_URL for production 
 import { DataBaseDataContext } from "./contexts/DataBaseDataContext";
 import { AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";

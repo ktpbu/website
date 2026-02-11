@@ -1,4 +1,4 @@
-import {initializeApp} from "firebase/app"
+import {getApp, getApps, initializeApp} from "firebase/app"
 import {getAuth} from "firebase/auth"
 import {getFirestore} from "firebase/firestore"
 import {getStorage} from "firebase/storage"
@@ -14,9 +14,10 @@ const firebaseConfig = {
     measurementId: env.FIREBASE_MEASUREMENT_ID ?? env.VITE_FIREBASE_MEASUREMENT_ID
   };
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig); //check for already existing apps 
 const auth = getAuth(app);
 const firestore = getFirestore(app);
 const storage = getStorage(app);
+
 
 export {app, auth, storage, firestore}
