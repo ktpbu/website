@@ -6,6 +6,8 @@ import About from "./pages/About";
 import Brothers from "./pages/Brothers";
 import Rush from "./pages/Rush";
 import Contact from "./pages/Contact";
+import Admin from "./pages/Admin/Admin";
+import AdminLogin from "./pages/Admin/AdminLogin";
 import Error from "./pages/Error";
 
 import Header from "./components/Header";
@@ -14,11 +16,12 @@ import Footer from "./components/Footer";
 // import ChatbotProvider from "./contexts/ChatbotContext";
 import { useState, useEffect } from "react";
 import axios from "axios";
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_LOCAL_BACKEND_URL; //change back to VITE_BACKEND_URL for production 
 import { DataBaseDataContext } from "./contexts/DataBaseDataContext";
 import { AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import BackToTop from "./components/ScrollTop";
+import AdminDashboard from "./pages/Admin/AdminDashoard";
 // import { SnackbarProvider } from "notistack";
 
 function App() {
@@ -46,8 +49,10 @@ function App() {
 
     return (
         <div className="flex flex-col min-h-screen">
-            {/* Header at the top */}
-            <Header />
+            {/* Header at the top */
+            !location.pathname.includes("admin") && <Header/>
+            }
+
             {/* Google analytics, ask KIEFER */}
             {/* <script
                 async
@@ -70,7 +75,13 @@ function App() {
                             <Route path="/brothers" element={<Brothers />} />
                             <Route path="/rush" element={<Rush />} />
                             <Route path="/contact" element={<Contact />} />
+
+                            {/*Admin page route : START */}
+                            <Route path="/admin" element={<Admin />} />
+                            <Route path="/adminDashboard" element={<AdminDashboard />} />
+                            {/*Admin page route : END */}
                             <Route path="*" element={<Error />} />
+
                         </Routes>
                     </AnimatePresence>
                 </DataBaseDataContext.Provider>
@@ -82,8 +93,10 @@ function App() {
                     <ChatWidget />
                 </ChatbotProvider>
             </SnackbarProvider> */}
-            {/* Footer at the bottom */}
-            <Footer />
+            {/* Footer at the bottom */
+            !location.pathname.includes("admin") &&  <Footer /> 
+            }
+      
         </div>
     );
 }

@@ -32,6 +32,7 @@
         "puppeteer": "^23.11.1",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
+        "react-icons": "^5.5.0",
         "react-intersection-observer": "^9.15.0",
         "react-loader-spinner": "^6.1.6",
         "react-loading-dot": "^1.0.6",
