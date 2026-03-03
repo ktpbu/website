@@ -76,9 +76,35 @@ function getUserByName(name: string): User[] {
 
 }
 
-    const filters = ["Eboard Position", "Class Year", "Position"]
+    const filters = ["Position", "Grad Year", "Committee", "Class"] //must match that of the filterValues in index values 
+    const filterValues = [
+        ["Member", "Pledge", "Rushee", "President", "Vice President"], //Position
+       [2026, 2027, 2028, 2029],//Grad Year
+        ["Philantropy", "Tech Dev"], //COmmittee
+        ["Zeta", "Alpha"] //Class
+    ]
+    const [selectedFilters, setSelectedFilters] = useState({
+        "Position": false as any,
+        "Grad Year": false as any,
+        "Committee": false as any,
+        "Class": false as any,
+    })
+
+
+    const getRangeOfGradYear = () =>{
+        let currentYear = new Date().getFullYear() 
+        let idx = 4;
+    }
+
+    getRangeOfGradYear() 
+
+
+
     const [queryResults, setQueryResults] = useState([] as User[]);
     const [searchQuery, setSearchQuery] = useState("");
+
+
+
     const allBrothers = (data : User[]) =>  {
 
         return (
@@ -143,7 +169,9 @@ const [modalOpen, setModalOpen] = useState(false)
 const [userClicked, setUserClicked] = useState<User | null>(null)
 const [editMode, seteditMode] = useState(false)
 
+const setFilter = (name : String, value : String) =>{
 
+}
 
 
     return(
@@ -168,7 +196,46 @@ const [editMode, seteditMode] = useState(false)
 
                         <div className="h-auto mt-6">
                             {
-                                filters.map((itm, idx) => <h1 key={idx} className={`text-base md:text-xl ${idx > 0 ? "border-t border-black" : ""}`}>{itm}</h1>)
+                                filters.map((itm, idx) =>{
+                                    return(
+                                        <div>
+                                <h1 key={idx} className={`text-base md:text-xl ${idx < 0 ? "border-t border-black" : ""}`}>{itm}</h1>
+                                
+
+                                <div style = {{display: "flex", flexDirection: "column", gap: 8, marginBottom: 20, marginTop: 10}}>
+                                {
+                                    filterValues[idx].map((_itm, _idx) =>{
+                                        return(
+                                            <div style = {{display: "flex", flexDirection:"row-reverse", gap: 10, justifyContent:"left", alignItems:"center"}}>
+                                             <label>{_itm}</label>
+                                             <input type = "checkbox" placeholder='Value' onChange = {() =>{ 
+                                                //read from {selectedFilters} object: 
+                                                switch(itm){
+                                                    case "Position": 
+                                                        setSelectedFilters({...selectedFilters, "Position": "TEST ITM" })
+                                                        break; 
+                                                    case "Grad Year": 
+                                                        setSelectedFilters({...selectedFilters, "Grad Year": "TEST ITM" })
+                                                        break; 
+                                                    case "Committee":
+                                                        setSelectedFilters({...selectedFilters, "Committee": "TEST" })
+                                                        break; 
+                                                    case "Class": 
+                                                        setSelectedFilters({...selectedFilters, "Class": "TEST" })
+                                                    default: 
+                                                        console.log("The filter typoe is invalid or not identified in the object")
+                                                }
+
+                                                console.log(selectedFilters)
+                                             }}/>
+                                            </div>
+                                        )
+                                    })
+                                }
+                                </div>
+                                </div>
+                                    )
+                                })
                             }
                         </div>
                     </div>

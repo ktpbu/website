@@ -66,7 +66,7 @@ export default function Admin(){
 
         <div className="bg-transparent flex flex-col gap-y-8 md:gap-y-[50px] items-center">
 
-               <h1 className="text-xl md:text-[25px] font-bold text-white">KTAdmin</h1>
+               <h1 className="text-xl md:text-[72px] font-bold text-white">KTAdmin</h1>
 
 
                <div id="auth">
