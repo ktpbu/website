@@ -1,5 +1,5 @@
 import MenuIcon from '@mui/icons-material/Menu';
-import { useState } from 'react';
+import { useState, useRef} from 'react';
 import {storage, firestore} from "../../firebase/firebase"
 import { useContext } from 'react';
 import { DataBaseDataContext } from '../../contexts/DataBaseDataContext';
@@ -8,7 +8,8 @@ import axios from 'axios';
 import ViewANdEditMember from './BatchAddMembers';
 import Modal from 'react-modal';
 import "./main.css"
-
+import { doc, updateDoc } from "firebase/firestore";
+import {ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import SideMenu from '../../components/Admin/SideMenu';
 
 const backendUrl = import.meta.env.VITE_LOCAL_BACKEND_URL; //change back to VITE_BACKEND_URL for production
@@ -174,6 +175,36 @@ const setFilter = (name : String, value : String) =>{
 }
 
 
+
+ const handleImageUpload = async (brotherId: string, file: File) => {
+    if (!file) return;
+
+    // 1. Create a reference to 'brothers/brotherID.jpg' in storage
+    const storageRef = ref(storage, `brothers/${brotherId}-${file.name}`);
+
+    try {
+      // 2. Upload the file
+      await uploadBytes(storageRef, file);
+
+      // 3. Get the public URL
+      const downloadURL = await getDownloadURL(storageRef);
+
+      // 4. Update the Database Document
+      const brotherDocRef = doc(firestore, "users", brotherId); // Assuming collection is 'users'
+      await updateDoc(brotherDocRef, {
+        WebsitePhotoURL: downloadURL
+      });
+
+      alert("Photo updated successfully!");
+    } catch (error) {
+      console.error("Upload failed", error);
+      alert("Failed to upload image.");
+    } 
+  };
+
+  const fileInputRef = useRef<HTMLInputElement>(null) 
+
+
     return(
         <div className="p-4 md:p-8 max-w-auto mx-auto bg-[rgb(248,247,252)] min-h-screen" id="SideMenuContainer">
 
@@ -274,7 +305,29 @@ const setFilter = (name : String, value : String) =>{
                         <div className="w-auto h-auto content-center pt-[100px] pl-[100px] justify-center items-center">
 
                             <div className="flex flex-row gap-[100px]">
+                                <div className="flex flex-col">
                          <img src={userClicked?.WebsitePhotoURL ?? fallbackImage} className="h-10 md:h-[400px] aspect-auto rounded-sm" />
+                         <input 
+                        type="file" 
+                        accept="image/*"
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        onChange={(e) => {
+                        if (e.target.files?.[0] && userClicked?.id) {
+                        handleImageUpload(userClicked.id, e.target.files[0]);
+                                 }
+                             }}
+                        />
+
+{/* Change Photo Button */}
+<button 
+  onClick={() => fileInputRef.current?.click()}
+  className="mt-2 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+>
+Upload Photo
+</button>
+</div>
+
                          <div id = "detailsColumn" className="flex flex-col items-start justify-start">
                             {
                                 !editMode?
