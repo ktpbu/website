@@ -38,7 +38,7 @@ interface User {
   Major?: string;
   Minor?: string;
   GradYear?: string;
-  Colleges?: string;
+  Colleges?: string[];
 }
 
 interface DataBaseDataContextType {
@@ -51,6 +51,16 @@ async function getUserByEmail(email:String){
     return res.data
 }
 
+async function updateUser(id: String, updatedObject:Object){
+    try{
+        const res = await axios.put(`${backendUrl}/users/${id}`, updatedObject); 
+        alert("User SUccesfully updated!")
+    }catch(e:any){
+        console.log("Error on updating user object: ", e.message)
+    }
+ 
+
+}
 
 
 function getUserByName(name: string): User[] {
@@ -168,6 +178,22 @@ const customStyles = {
 };
 const [modalOpen, setModalOpen] = useState(false)
 const [userClicked, setUserClicked] = useState<User | null>(null)
+
+function update_userSelected(field: keyof User, value: String | number | String[]){
+    try{
+ setUserClicked(prev =>{
+        return prev? {
+            ...prev, [field]: value
+        }
+        :
+        prev
+    })
+    }catch(e:any){
+        console.log(e.message)
+    }
+   
+}
+
 const [editMode, seteditMode] = useState(false)
 
 const setFilter = (name : String, value : String) =>{
@@ -201,6 +227,8 @@ const setFilter = (name : String, value : String) =>{
       alert("Failed to upload image.");
     } 
   };
+
+
 
   const fileInputRef = useRef<HTMLInputElement>(null) 
 
@@ -344,21 +372,54 @@ Upload Photo
 
                             <p>GradYear: {userClicked?.GradYear ?? null}</p>
                             <p>Class: {userClicked?.Class ?? "None"}</p>
-                            <p>Colleges: {userClicked?.Colleges ?? "None"}</p>
+                            <p>Colleges: {(userClicked?.Colleges)?.map((v, idx) => (idx < userClicked?.Colleges.length -1) ? `${v},` : `${v}`) ?? "None"}</p>
 
                             </>
                             :
                             <>
-                            <p>Clout: <input type="text" placeholder={userClicked?.Clout ?? ''} /></p>
-                            <p>Position: <input type="text" placeholder={String(userClicked?.Position ?? '')} /></p>
-                            <p >First Name: <input type="text" placeholder={userClicked?.FirstName ?? ''} /> </p>
-                            <p >Last Name <input type="text" placeholder={userClicked?.LastName ?? ''} /></p>
-                            <p>BUEmail: <input type="text" placeholder={userClicked?.BUEmail ?? ''} /></p>
-                            <p>Major: <input type="text" placeholder={userClicked?.Major ?? ''} /></p>
-                            <p>Minor: <input type="text" placeholder={userClicked?.Minor ?? ''} /></p>
-                            <p>GradYear: <input type="text" placeholder={userClicked?.GradYear ?? ''} /></p>
-                            <p>Class: <input type="text" placeholder={userClicked?.Class ?? 'None'} /></p>
-                            <p>Colleges: <input type="text" placeholder={userClicked?.Colleges ?? ''} /></p>
+                            <p>Clout: <input 
+                            onChange={(e) => update_userSelected("Clout", e.target.value) } 
+                            type="text" placeholder={userClicked?.Clout ?? ''} /></p>
+                            <p>Position: <input 
+                            onChange={(e) => update_userSelected("Position", Number(e.target.value)) } 
+                            type="text" placeholder={String(userClicked?.Position ?? '')} /></p>
+                            <p >First Name: <input 
+                            onChange={(e) => update_userSelected("FirstName", e.target.value) } 
+                            type="text" placeholder={userClicked?.FirstName ?? ''} /> </p>
+                            <p >Last Name <input
+                            onChange={(e) => update_userSelected("LastName", e.target.value) } 
+                             type="text" placeholder={userClicked?.LastName ?? ''} /></p>
+                            <p>BUEmail: <input 
+                            onChange={(e) => update_userSelected("BUEmail", e.target.value) } 
+                            type="text" placeholder={userClicked?.BUEmail ?? ''} /></p>
+                            <p>Major: <input
+                            onChange={(e) => update_userSelected("Major", e.target.value) } 
+                            type="text" placeholder={userClicked?.Major ?? ''} /></p>
+                            <p>Minor: <input 
+                            onChange={(e) => update_userSelected("Minor", e.target.value) } 
+                            type="text" placeholder={userClicked?.Minor ?? ''} /></p>
+                            <p>GradYear: <input 
+                            onChange={(e) => update_userSelected("GradYear", Number(e.target.value)) } 
+                            type="text" placeholder={userClicked?.GradYear ?? ''} /></p>
+                            <p>Class: <input 
+                            onChange={(e) => update_userSelected("Class", e.target.value) } 
+                            type="text" placeholder={userClicked?.Class ?? 'None'} /></p>
+                            <p>Colleges: 
+                                {
+                                    (userClicked?.Colleges)?.map((itm, idx) =>{
+                                        return  <><input 
+                                                className = "w-[10%]"
+                                                onChange={(e) =>{
+                                                    let finalState = userClicked?.Colleges; 
+                                                    finalState[idx] = e.target.value; 
+                                                    console.log(finalState)
+
+                                                    update_userSelected("Colleges",finalState)
+                                                } } 
+                                                type="text" placeholder={itm} /></>
+                                    })
+                                }
+                            </p>
                             </>
                             }
 
@@ -398,7 +459,17 @@ Upload Photo
                         <>
                           <button
                         className="bg-[#004C96] border border-[#004C96] rounded content-center flex cursor-pointer text-white px-6 py-0.5 text-xl"
-                            onClick={ () => seteditMode(false)}
+                            onClick={ async () => {
+
+                                 if(userClicked){
+                                  await updateUser(userClicked?.id, userClicked)
+                                seteditMode(false);
+
+                                 }
+                                
+                             
+
+                            }}
                         >
 
                             Save
