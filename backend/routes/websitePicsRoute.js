@@ -1,5 +1,7 @@
 import express from "express";
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
+//import multer from 'multer';
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const router = express.Router();
 
@@ -21,6 +23,53 @@ export default function websitePicsRoute(db) {
             res.status(500).send('An error occurred during the file upload.');
         }
     });
+
+    /*
+    const storage = getStorage();
+    const upload = multer({ storage: multer.memoryStorage() });
+
+
+    //post image with user ID as title to firestorage
+    router.post("/postIntoStorage", upload.single('image'), async (req, res) => {
+        try {
+            const { userId } = req.body;
+            if (!userId || !req.file) {
+                return res.status(400).send({ message: "userId and image file are required" });
+            }
+
+            const fileRef = storageRef(storage, `users/${userId}/profile.jpg`);
+            await uploadBytes(fileRef, req.file.buffer, { contentType: req.file.mimetype });
+
+            const downloadURL = await getDownloadURL(fileRef);
+
+            // Update user doc in Firestore
+            const userDoc = doc(db, 'users', userId);
+            await updateDoc(userDoc, { WebsitePhotoURL: downloadURL });
+
+            res.status(200).send({ downloadURL });
+        } catch (err) {
+            console.error('Error uploading to Storage:', err);
+            res.status(500).send('An error occurred during the upload.');
+        }
+    });
+
+    //get image from firestorage using user id:
+    router.get("/getFirestorageImg/:id", async (req, res) => {
+        try {
+            const { id } = req.params;
+            const fileRef = storageRef(storage, `users/${id}/profile.jpg`);
+            const downloadURL = await getDownloadURL(fileRef);
+            res.status(200).send({ downloadURL });
+        } catch (err) {
+            console.error('Error fetching from Storage:', err);
+            if (err.code === 'storage/object-not-found') {
+                res.status(404).send({ message: "Image not found" });
+            } else {
+                res.status(500).send('An error occurred.');
+            }
+        }
+    });
+*/
 
     // Get one photo by ID
     router.get('/:id', async (request, response) => {

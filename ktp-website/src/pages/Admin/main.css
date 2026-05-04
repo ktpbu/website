@@ -1,0 +1,30 @@
+/* Admin-page-only styles.
+   All rules are scoped to #SideMenuContainer (the root div of every admin page)
+   to prevent leaking into the public site. The SideMenu ul/li styles are handled
+   by Tailwind classes directly on those elements — no global ul/li rules needed. */
+
+#SideMenuContainer button:active {
+    opacity: 0.5;
+}
+
+#SideMenuContainer .filters h1:not(:first-child) {
+    border-top: solid black 1px;
+}
+
+#detailsColumn p {
+    gap: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+#newMembersQuickActionButtons button {
+    background-color: rgb(226, 226, 226);
+    border-radius: 5px;
+    padding: 5px 1px;
+    cursor: pointer;
+    color: rgb(119, 119, 119);
+}
+
+#plusIcon :active {
+    opacity: 0.25;
+}

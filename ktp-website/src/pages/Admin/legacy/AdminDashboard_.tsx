@@ -3,7 +3,7 @@ import { DataBaseDataContext } from "../contexts/DataBaseDataContext";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getFirestore, doc, updateDoc } from "firebase/firestore";
 
-export default function AdminDashboard() {
+export default function _AdminDashboard() {
   const dataContext = useContext(DataBaseDataContext);
   const userData = dataContext?.userData || [];
   

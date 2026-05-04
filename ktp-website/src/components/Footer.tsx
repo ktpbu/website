@@ -39,7 +39,7 @@ function Footer() {
     ];
     return (
         <footer className="bg-ktp-appblue text-white py-8 relative">
-            <div className="container max-w-4/5 md:max-w-[1000] mx-auto flex flex-wrap justify-around">
+            <div className="container max-w-4/5 md:max-w-[1000px] mx-auto flex flex-wrap justify-around">
                 {/* Menu Section */}
                 <div className="m-4">
                     <h3 className="font-bold text-lg mb-4">Menu</h3>

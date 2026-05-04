@@ -6,6 +6,8 @@ import About from "./pages/About";
 import Brothers from "./pages/Brothers";
 import Rush from "./pages/Rush";
 import Contact from "./pages/Contact";
+import Admin from "./pages/Admin/Admin";
+import AdminLogin from "./pages/Admin/legacy/AdminLogin";
 import Error from "./pages/Error";
 
 import Header from "./components/Header";
@@ -19,6 +21,9 @@ import { DataBaseDataContext } from "./contexts/DataBaseDataContext";
 import { AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import BackToTop from "./components/ScrollTop";
+import AdminDashboard from "./pages/Admin/AdminDashoard";
+import BatchAddMembers from "./pages/Admin/BatchAddMembers";
+import AdminRoute from "./components/Admin/AdminRoute";
 // import { SnackbarProvider } from "notistack";
 
 function App() {
@@ -34,7 +39,10 @@ function App() {
                     `${backendUrl}/websitePics`
                 );
 
+
                 setUserData(userResponse.data.data);
+                       console.log(userData) //debug log
+
                 setPictureData(pictureResponse.data.data);
             } catch (error) {
                 console.error("Error fetching data in App:", error);
@@ -46,8 +54,10 @@ function App() {
 
     return (
         <div className="flex flex-col min-h-screen">
-            {/* Header at the top */}
-            <Header />
+            {/* Header at the top */
+            !location.pathname.includes("admin") && <Header/>
+            }
+
             {/* Google analytics, ask KIEFER */}
             {/* <script
                 async
@@ -70,7 +80,16 @@ function App() {
                             <Route path="/brothers" element={<Brothers />} />
                             <Route path="/rush" element={<Rush />} />
                             <Route path="/contact" element={<Contact />} />
+
+                            {/*Admin pages route : START */}
+                            <Route path="/admin" element={<Admin />} />
+                            <Route path="/adminDashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+                            <Route path="/adminBatchAddMembers" element={<AdminRoute><BatchAddMembers /></AdminRoute>} />
+                            {/*Admin pages route : END */}
+
+
                             <Route path="*" element={<Error />} />
+
                         </Routes>
                     </AnimatePresence>
                 </DataBaseDataContext.Provider>
@@ -82,8 +101,10 @@ function App() {
                     <ChatWidget />
                 </ChatbotProvider>
             </SnackbarProvider> */}
-            {/* Footer at the bottom */}
-            <Footer />
+            {/* Footer at the bottom */
+            !location.pathname.includes("admin") &&  <Footer /> 
+            }
+      
         </div>
     );
 }
