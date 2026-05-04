@@ -3,13 +3,7 @@ import {FcGoogle} from "react-icons/fc"
 import {auth} from "../../firebase/firebase"
 import {useNavigate, } from 'react-router-dom'
 import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth"
-import { env } from "process"
-import axios from "axios"
-const ALLOWED_EMAILS = [
-    "president@ktp-bostonu.com",
-    "tech-chair@ktp-bostonu.com",
-    "ander010@bu.edu"
-];
+import { ALLOWED_ADMIN_EMAILS } from "../../constants/adminEmails";
 
 
 export default function Admin(){
@@ -31,7 +25,7 @@ export default function Admin(){
           }
 
         //email is within bu domain, check if its one of the allowed emails
-        if (!ALLOWED_EMAILS.includes(email)) {
+        if (!ALLOWED_ADMIN_EMAILS.includes(email)) {
               setError("Access Denied: You are not an authorized admin.");
               await auth.signOut();
               return

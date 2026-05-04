@@ -16,13 +16,14 @@ import Footer from "./components/Footer";
 // import ChatbotProvider from "./contexts/ChatbotContext";
 import { useState, useEffect } from "react";
 import axios from "axios";
-const backendUrl = import.meta.env.VITE_LOCAL_BACKEND_URL; //change back to VITE_BACKEND_URL for production 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 import { DataBaseDataContext } from "./contexts/DataBaseDataContext";
 import { AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import BackToTop from "./components/ScrollTop";
 import AdminDashboard from "./pages/Admin/AdminDashoard";
 import BatchAddMembers from "./pages/Admin/BatchAddMembers";
+import AdminRoute from "./components/Admin/AdminRoute";
 // import { SnackbarProvider } from "notistack";
 
 function App() {
@@ -82,8 +83,8 @@ function App() {
 
                             {/*Admin pages route : START */}
                             <Route path="/admin" element={<Admin />} />
-                            <Route path="/adminDashboard" element={<AdminDashboard />} />
-                            <Route path="/adminBatchAddMembers" element={<BatchAddMembers />} />
+                            <Route path="/adminDashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+                            <Route path="/adminBatchAddMembers" element={<AdminRoute><BatchAddMembers /></AdminRoute>} />
                             {/*Admin pages route : END */}
 
 
