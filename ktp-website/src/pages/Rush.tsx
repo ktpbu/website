@@ -286,8 +286,9 @@ function Rush() {
                     <h2 className="text-center text-2xl sm:text-4xl font-black text-ktp-appblue mb-10">
                         Upcoming Rush Events
                     </h2>
-                    {/* Pass only events with valid names to RushEvents */}
+                    {/* Pass only non-private events with valid names to RushEvents */}
                     <RushEvents events={events.filter((e: any) =>
+                      e.visibility !== "private" &&
                       e.Name &&
                       !e.Name.toLowerCase().includes("untitled")
                     )} />

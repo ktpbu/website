@@ -152,10 +152,15 @@ export function RushEvents({ events }: { events: RushEvent[] }) {
                   </Box>
                 )}
 
-                {/* Description */}
+                {/* Description — split on semicolons into separate lines */}
                 {event.Description && (
                   <Typography variant="body2" sx={{ mt: 1 }}>
-                    {event.Description}
+                    {event.Description.split(';').map((part, i, arr) => (
+                      <span key={i}>
+                        {part.trim()}
+                        {i < arr.length - 1 && <br />}
+                      </span>
+                    ))}
                   </Typography>
                 )}
               </Paper>
