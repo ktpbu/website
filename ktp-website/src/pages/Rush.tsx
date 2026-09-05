@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import Scene from "../components/Scene";
 import gsap from "gsap";
@@ -7,6 +7,7 @@ import axios from "axios";
 import { RushEvents } from "../components/Timeline";
 import "react-loading-skeleton/dist/skeleton.css";
 import vpRecruitmentPhoto from "../img/vp_recruitment.jpeg";
+import { DataBaseDataContext } from "../contexts/DataBaseDataContext";
 
 // Define the type of your Rush Event if using TypeScript
 interface RushEvent {
@@ -55,6 +56,13 @@ function Rush() {
     } | null>(null);
     const [, setScrollY] = useState(0);
     const [showUpcomingEvents, setShowUpcomingEvents] = useState(false);
+
+    // Look up the VP of Recruitment from Firestore user data
+    const dataContext = useContext(DataBaseDataContext);
+    const userData = dataContext?.userData;
+    const vpRecruitment = userData?.find(
+        (user: any) => user.Eboard_Position?.toLowerCase().includes("recruitment")
+    );
 
     useEffect(() => {
         import("../firebase/remoteConfig").then(({ getShowUpcomingEvents }) => {
@@ -233,8 +241,8 @@ function Rush() {
                     {/* Image Section */}
                     <div className="mb-6 md:mb-0">
                         <img
-                            src={vpRecruitmentPhoto}
-                            alt="Laura - VP of Recruitment"
+                            src={vpRecruitment?.WebsitePhotoURL || vpRecruitmentPhoto}
+                            alt={`${vpRecruitment?.FirstName ?? "VP"} - VP of Recruitment`}
                             className="rounded-md shadow-lg object-cover w-60 h-120"
                         />
                     </div>
@@ -265,7 +273,7 @@ function Rush() {
                         <p className="text-base">
                             Sincerely,
                             <br />
-                            Laura Yatavelli
+                            {vpRecruitment ? `${vpRecruitment.FirstName} ${vpRecruitment.LastName}` : "VP of Recruitment"}
                             <br />
                             VP of Recruitment
                         </p>
