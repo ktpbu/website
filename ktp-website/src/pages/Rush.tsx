@@ -288,7 +288,7 @@ function Rush() {
                     </h2>
                     {/* Pass only non-private events with valid names to RushEvents */}
                     <RushEvents events={events.filter((e: any) =>
-                      e.visibility !== "private" &&
+                      e.visibility?.toLowerCase() !== "private" &&
                       e.Name &&
                       !e.Name.toLowerCase().includes("untitled")
                     )} />
