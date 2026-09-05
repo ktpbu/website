@@ -9,7 +9,15 @@ export default function eventsRoute(db) {
         try {
             const eventsCollection = collection(db, 'events');
             const eventsSnapshot = await getDocs(eventsCollection);
-            const eventsList = eventsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const allEvents = eventsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+            // Filter out private and untitled events before sending to the client
+            const eventsList = allEvents.filter(event =>
+                (!event.visibility || event.visibility.toLowerCase() !== 'private') &&
+                event.Name &&
+                !event.Name.toLowerCase().includes('untitled')
+            );
+
             return response.status(200).json({
                 count: eventsList.length,
                 data: eventsList,

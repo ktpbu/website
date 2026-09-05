@@ -123,30 +123,30 @@ export function RushEvents({ events }: { events: RushEvent[] }) {
           <TimelineContent sx={{ py: 2 }}>
             {/* Wrap our card in the FadeInSection */}
             <FadeInSection>
-              <Paper elevation={3} sx={{ p: 3, display: 'inline-block', maxWidth: '460px', width: '100%' }}>
+              <Paper elevation={3} sx={{ p: 3, display: 'inline-block', maxWidth: '460px', width: '100%', textAlign: 'left' }}>
                 {/* Event Name */}
                 <Typography
                   variant="h6"
                   component="h1"
                   gutterBottom
-                  sx={{ textAlign: 'center', fontWeight: 'bold', mb: 1.5 }}
+                  sx={{ textAlign: 'left', fontWeight: 'bold', mb: 1.5 }}
                 >
                   {event.Name}
                 </Typography>
 
                 {/* Date & Time */}
-                <Box display="flex" alignItems="center" gap={1} mb={1}>
-                  <AccessTimeIcon fontSize="small" sx={{ flexShrink: 0 }} />
-                  <Typography variant="body2">
+                <Box display="flex" alignItems="flex-start" gap={1} mb={1} flexWrap="wrap">
+                  <AccessTimeIcon fontSize="small" sx={{ flexShrink: 0, mt: '2px' }} />
+                  <Typography variant="body2" sx={{ textAlign: 'left' }}>
                     {formatEventDate(event.Day, event.EndDay)}, {formatEventTime(event.Day, event.Time)}
                   </Typography>
                 </Box>
 
                 {/* Location — only render if present */}
                 {event.Location && (
-                  <Box display="flex" alignItems="center" gap={1} mb={1}>
-                    <PlaceIcon fontSize="small" sx={{ flexShrink: 0 }} />
-                    <Typography variant="body2">
+                  <Box display="flex" alignItems="flex-start" gap={1} mb={1} flexWrap="wrap">
+                    <PlaceIcon fontSize="small" sx={{ flexShrink: 0, mt: '2px' }} />
+                    <Typography variant="body2" sx={{ textAlign: 'left' }}>
                       {event.Location}
                     </Typography>
                   </Box>
@@ -154,7 +154,7 @@ export function RushEvents({ events }: { events: RushEvent[] }) {
 
                 {/* Description — split on semicolons into separate lines */}
                 {event.Description && (
-                  <Typography variant="body2" sx={{ mt: 1 }}>
+                  <Typography variant="body2" sx={{ mt: 1, textAlign: 'left' }}>
                     {event.Description.split(';').map((part, i, arr) => (
                       <span key={i}>
                         {part.trim()}
